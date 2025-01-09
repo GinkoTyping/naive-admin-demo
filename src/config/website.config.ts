@@ -2,8 +2,8 @@ import logoImage from '@/assets/images/logo.png';
 import loginImage from '@/assets/images/account-logo.png';
 
 export const websiteConfig = Object.freeze({
-  title: 'NaiveUiAdmin',
+  title: '风险评估系统',
   logo: logoImage,
   loginImage: loginImage,
-  loginDesc: 'Naive Ui Admin中后台前端/设计解决方案',
+  loginDesc: '基于ANP模糊综合评价法的排水系统运行风险评估系统',
 });
