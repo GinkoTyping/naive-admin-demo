@@ -19,18 +19,10 @@ const routes: Array<RouteRecordRaw> = [
         path: 'indicator-setting',
         name: 'indicator-setting',
         meta: {
-          title: '指标设置',
+          title: '指标管理',
         },
         component: () => import('@/views/indicator/setting.vue'),
       },
-      {
-        path: 'indicator-model',
-        name: 'indicator-model',
-        meta: {
-          title: '指标模型',
-        },
-        component: () => import('@/views/form/stepForm/stepForm.vue'),
-      }
     ],
   },
 ];
