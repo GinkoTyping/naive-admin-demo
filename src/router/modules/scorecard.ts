@@ -21,7 +21,7 @@ const routes: Array<RouteRecordRaw> = [
         meta: {
           title: '打分表管理',
         },
-        component: () => import('@/views/list/basicList/index.vue'),
+        component: () => import('@/views/scorecard/index.vue'),
       },
     ],
   },

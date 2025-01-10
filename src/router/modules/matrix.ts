@@ -21,7 +21,7 @@ const routes: Array<RouteRecordRaw> = [
         meta: {
           title: '矩阵管理',
         },
-        component: () => import('@/views/form/basicForm/index.vue'),
+        component: () => import('@/views/matrix/index.vue'),
       },
     ],
   },

@@ -323,7 +323,7 @@
             rotate: 0,
             verticalAlign: 'top',
             align: 'center',
-            fontSize: 14,
+            fontSize: 15,
           },
           leaves: {
             label: {
@@ -331,7 +331,7 @@
               rotate: 0,
               verticalAlign: 'top',
               align: 'center',
-              fontSize: 14,
+              fontSize: 15,
             },
           },
           animationDurationUpdate: 750,
