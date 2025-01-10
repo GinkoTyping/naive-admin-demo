@@ -7,7 +7,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/system',
     name: 'System',
-    redirect: '/system/menu',
+    redirect: '/system/home',
     component: Layout,
     meta: {
       title: '主页',
@@ -16,12 +16,12 @@ const routes: Array<RouteRecordRaw> = [
     },
     children: [
       {
-        path: 'menu',
-        name: 'system_menu',
+        path: 'home',
+        name: 'system_home',
         meta: {
           title: '主页',
         },
-        component: () => import('@/views/system/menu/menu.vue'),
+        component: () => import('@/views/home/index.vue'),
       },
     ],
   },
