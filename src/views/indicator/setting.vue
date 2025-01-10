@@ -34,7 +34,7 @@
 </template>
 
 <script setup>
-  import { NIcon, NButton, NTag, useMessage } from 'naive-ui';
+  import { NIcon, NButton, NTag, useDialog, useMessage } from 'naive-ui';
   import { CreateOutline, TrashOutline, AddOutline } from '@vicons/ionicons5';
   import { defineComponent, h, ref, computed, onMounted } from 'vue';
   import { useDebounceFn, tryOnUnmounted } from '@vueuse/core';
@@ -43,6 +43,8 @@
   import echarts from '@/utils/lib/echarts';
   import { useEventListener } from '@/hooks/event/useEventListener';
 
+  const dialog = useDialog();
+  const message = useMessage();
   const defaultData = ref([
     {
       label: '季冻区隧道排水系统完好度评估指标体系',
@@ -242,7 +244,36 @@
       );
     }
     if (param.option.level !== -1) {
-      buttons.push(h(NIcon, { title: '删除' }, { default: () => h(TrashOutline) }));
+      buttons.push(
+        h(
+          NIcon,
+          {
+            title: '删除',
+            onClick: (e) => {
+              e.stopPropagation();
+              formMode.value = 'delete';
+              formData.value.key = param.option.key;
+              formData.value.label = '';
+
+              dialog.warning({
+                title: '删除指标',
+                content: `确定删除指标： ${param.option.label}？`,
+                positiveText: '确定',
+                negativeText: '取消',
+                draggable: true,
+                onPositiveClick: () => {
+                  modifyLableByKey(param.option.label, param.option.key, 'delete');
+                  message.success('删除成功。');
+                },
+                onNegativeClick: () => {
+                  message.error('删除操作取消。');
+                },
+              });
+            },
+          },
+          { default: () => h(TrashOutline) }
+        )
+      );
     }
     return h('div', { style: { display: 'flex', gap: '8px' } }, buttons);
   }
@@ -354,7 +385,7 @@
         showDialog.value = true;
       } else {
         console.log('表单数据:', formData.value);
-        updateInsertLableByKey(formData.value.label, formData.value.key, formMode.value);
+        modifyLableByKey(formData.value.label, formData.value.key, formMode.value);
         showDialog.value = false;
       }
     });
@@ -366,7 +397,7 @@
     formData.value.label = '';
   };
 
-  function updateInsertLableByKey(label, key, mode) {
+  function modifyLableByKey(label, key, mode) {
     if (label) {
       let foundNode;
       function findByKey(list) {
@@ -384,7 +415,7 @@
       findByKey(defaultData.value);
       if (mode === 'edit') {
         foundNode.label = label;
-      } else {
+      } else if (mode === 'create') {
         if (!foundNode.children?.length) {
           foundNode.children = [];
         }
@@ -393,12 +424,35 @@
           key: label + '_' + Date.now(),
           level: foundNode.level + 1,
         });
+      } else {
+        foundNode.toDelete = true;
+        removeFromData();
       }
 
       updateChartData();
     } else {
       throw new Error('名称不能为空');
     }
+  }
+
+  function removeFromData() {
+    let parentNode;
+    let removeIndex;
+    function findNull(list) {
+      if (list?.length) {
+        list.some((item, index) => {
+          if (item.toDelete) {
+            parentNode = list;
+            removeIndex = index;
+            return true;
+          }
+          return findNull(item.children);
+        });
+      }
+      return false;
+    }
+    findNull(defaultData.value);
+    parentNode.splice(removeIndex, 1);
   }
   //#endregion
 </script>
