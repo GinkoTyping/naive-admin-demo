@@ -31,7 +31,7 @@ export function getAppEnvConfig() {
     VITE_GLOB_FILE_URL,
     VITE_USE_MOCK,
     VITE_LOGGER_MOCK,
-  } = ENV;
+  } = ENV || import.meta.env;
 
   if (!/^[a-zA-Z\_]*$/.test(VITE_GLOB_APP_SHORT_NAME)) {
     warn(
