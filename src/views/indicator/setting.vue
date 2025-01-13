@@ -3,7 +3,7 @@
     <n-card class="tree-container" title="指标设置">
       <n-tree
         block-line
-        :data="defaultData"
+        :data="indicators"
         :default-expanded-keys="['root']"
         :render-prefix="renderPrefix"
         :render-suffix="renderSuffix"
@@ -42,147 +42,12 @@
 
   import echarts from '@/utils/lib/echarts';
   import { useEventListener } from '@/hooks/event/useEventListener';
+  import { useUserStore } from '@/store/modules/user';
 
   const dialog = useDialog();
   const message = useMessage();
-  const defaultData = ref([
-    {
-      label: '季冻区隧道排水系统完好度评估指标体系',
-      key: 'root',
-      level: -1,
-      children: [
-        {
-          label: '人员因素',
-          key: '人员因素',
-          level: 0,
-          children: [
-            {
-              label: '外部人员',
-              key: '人员因素-外部人员',
-              level: 1,
-              children: [{ label: '蓄意破坏', key: '人员因素-外部人员-蓄意破坏', level: 2 }],
-            },
-            {
-              label: '运维人员',
-              key: '人员因素-运维人员',
-              level: 1,
-              children: [
-                { label: '专业水平', key: '人员因素-运维人员-专业水平', level: 2 },
-                { label: '安全意识', key: '人员因素-运维人员-安全意识', level: 2 },
-                { label: '工作年限', key: '人员因素-运维人员-工作年限', level: 2 },
-                { label: '责任意识', key: '人员因素-运维人员-责任意识', level: 2 },
-                { label: '教育水平', key: '人员因素-运维人员-教育水平', level: 2 },
-                { label: '培训状况', key: '人员因素-运维人员-培训状况', level: 2 },
-              ],
-            },
-          ],
-        },
-        {
-          label: '管理因素',
-          key: '管理因素',
-          level: 0,
-          children: [
-            { label: '管道数据完整度', key: '管理因素-管道数据完整度', level: 1 },
-            { label: '历史事故次数', key: '管理因素-历史事故次数', level: 1 },
-            { label: '维护管理水平', key: '管理因素-维护管理水平', level: 1 },
-            { label: '操作规程', key: '管理因素-操作规程', level: 1 },
-            { label: '应急预案', key: '管理因素-应急预案', level: 1 },
-          ],
-        },
-        {
-          label: '管道因素',
-          key: '管道因素',
-          level: 0,
-          children: [
-            {
-              label: '管道本体',
-              key: '管道因素-管道本体',
-              level: 1,
-              children: [
-                { label: '管道直径', key: '管道因素-管道本体-管道直径', level: 2 },
-                { label: '运行时间', key: '管道因素-管道本体-运行时间', level: 2 },
-                { label: '管道材质', key: '管道因素-管道本体-管道材质', level: 2 },
-                { label: '管道长度', key: '管道因素-管道本体-管道长度', level: 2 },
-                { label: '管道埋深', key: '管道因素-管道本体-管道埋深', level: 2 },
-                { label: '管道壁厚', key: '管道因素-管道本体-管道壁厚', level: 2 },
-                { label: '检查井密度', key: '管道因素-管道本体-检查井密度', level: 2 },
-              ],
-            },
-            {
-              label: '施工缺陷',
-              key: '管道因素-施工缺陷',
-              level: 1,
-              children: [
-                { label: '管道施工质量', key: '管道因素-管道本体-管道施工质量', level: 2 },
-                { label: '接头处施工质量', key: '管道因素-管道本体-接头处施工质量', level: 2 },
-              ],
-            },
-            {
-              label: '保护措施',
-              key: '管道因素-保护措施',
-              level: 1,
-              children: [
-                { label: '防腐措施', key: '管道因素-管道本体-防腐措施', level: 2 },
-                { label: '防变形措施', key: '管道因素-管道本体-防变形措施', level: 2 },
-              ],
-            },
-          ],
-        },
-        {
-          label: '缺陷因素',
-          key: '缺陷因素',
-          level: 0,
-          children: [
-            { label: '裂缝', key: '管理因素-裂缝', level: 1 },
-            { label: '错口', key: '管理因素-错口', level: 1 },
-            { label: '腐蚀', key: '管理因素-腐蚀', level: 1 },
-            { label: '破损', key: '管理因素-破损', level: 1 },
-            { label: '侵入', key: '管理因素-侵入', level: 1 },
-            { label: '积冰', key: '管理因素-积冰', level: 1 },
-            { label: '障碍物', key: '管理因素-障碍物', level: 1 },
-            { label: '沉淀物', key: '管理因素-沉淀物', level: 1 },
-          ],
-        },
-        {
-          label: '环境因素',
-          key: '环境因素',
-          level: 0,
-          children: [
-            {
-              label: '腐蚀',
-              key: '环境因素-腐蚀',
-              level: 1,
-              children: [
-                { label: '水中的硫酸盐含量', key: '环境因素-腐蚀-水中的硫酸盐含量', level: 2 },
-                { label: '水中的碳酸根含量', key: '环境因素-腐蚀-水中的碳酸根含量', level: 2 },
-                { label: '水的PH值', key: '环境因素-腐蚀-水的PH值', level: 2 },
-                { label: '水的流速', key: '环境因素-腐蚀-水的流速', level: 2 },
-                { label: '过水断面面积', key: '环境因素-腐蚀-过水断面面积', level: 2 },
-              ],
-            },
-            {
-              label: '地质影响',
-              key: '环境因素-地质影响',
-              level: 1,
-              children: [
-                { label: '管道上方荷载', key: '环境因素-地质影响-管道上方荷载', level: 2 },
-                { label: '封冻期时长', key: '环境因素-地质影响-封冻期时长', level: 2 },
-              ],
-            },
-            {
-              label: '不可抗力',
-              key: '环境因素-不可抗力',
-              level: 1,
-              children: [
-                { label: '地震烈度区划', key: '环境因素-不可抗力-地震烈度区划', level: 2 },
-                { label: '强降雨概率', key: '环境因素-不可抗力-强降雨概率', level: 2 },
-              ],
-            },
-          ],
-        },
-      ],
-    },
-  ]);
+  const userStore = useUserStore();
+  const indicators = userStore.indicators;
 
   function renderPrefix(param) {
     if (param.option.level === 0) {
@@ -284,13 +149,15 @@
   let chartData = [];
 
   function updateChartData() {
+    updateGraphics = true;
+
     function mapName(itemData) {
       if (itemData.level <= 0) {
         return itemData.label;
       }
       let output = '';
       for (let i = 0; i < itemData.label.length; i++) {
-        output += itemData.label[i] + '\n';
+        output += i === itemData.label.length - 1 ? itemData.label[i] : itemData.label[i] + '\n';
       }
       return output;
     }
@@ -302,7 +169,7 @@
         children: itemData.children?.map((child) => mapChart(child)) ?? [],
       };
     }
-    chartData = defaultData.value.map((item) => mapChart(item));
+    chartData = indicators.map((item) => mapChart(item));
 
     chartInstance.setOption({
       series: [
@@ -313,37 +180,113 @@
           left: '2%',
           right: '2%',
           top: '2%',
-          bottom: '18%',
+          bottom: '22%',
           symbol: 'emptyCircle',
           orient: 'vertical',
           expandAndCollapse: true,
           edgeShape: 'polyline',
+          symbolSize: 0,
+          lineStyle: {
+            width: 3, // 设置线条宽度为2像素
+          },
           label: {
-            position: 'bottom',
-            rotate: 0,
-            verticalAlign: 'top',
-            align: 'center',
-            fontSize: 15,
-          },
-          leaves: {
-            label: {
-              position: 'bottom',
-              rotate: 0,
+            normal: {
+              formatter: function (params) {
+                return params.data.level <= 0 ? `{hor|${params.name}}` : `{ver|${params.name}}`;
+              },
               verticalAlign: 'top',
-              align: 'center',
-              fontSize: 15,
+              color: '#1C75D2',
+              borderColor: '#1C75D2',
+              borderWidth: 2,
+              rich: {
+                hor: {
+                  verticalAlign: 'center',
+                  align: 'center',
+                  fontSize: 16,
+                  fontWeight: 'bolder',
+                  padding: [6, 6, 6, 6],
+                  borderColor: '#1C75D2',
+                  borderWidth: 1,
+                  backgroundColor: 'white',
+                },
+                ver: {
+                  height: 10,
+                  width: 10,
+                  verticalAlign: 'top',
+                  align: 'center',
+                  fontSize: 14,
+                  padding: 4,
+                  backgroundColor: 'white',
+                },
+              },
             },
+
+            // position: 'bottom',
+            // rotate: 0,
+            // verticalAlign: 'top',
+            // align: 'center',
+            // fontSize: 15,
+            // padding: [7, 4, 7, 4],
           },
+          // leaves: {
+          //   label: {
+          //     position: 'bottom',
+          //     rotate: 0,
+          //     verticalAlign: 'top',
+          //     align: 'center',
+          //     fontSize: 15,
+          //   },
+          // },
           animationDurationUpdate: 750,
         },
       ],
+      graphic: [],
     });
+  }
+
+  function getBoxGraphics() {
+    const graphic = [];
+    const seriesModel = chartInstance.getModel().getSeriesByIndex(0);
+    const dataIndices = seriesModel.getData().mapArray(function (idx) {
+      return idx;
+    });
+
+    dataIndices.forEach(function (idx) {
+      const data = seriesModel.getData().getItemModel(idx);
+      const boundingRect = seriesModel.getData().getItemLayout(idx);
+
+      let width = 70;
+      if (data.option.level === -1) {
+        width = 280;
+      }
+
+      if (boundingRect && data.option.level <= 0) {
+        const labelRect = {
+          shape: {
+            x: boundingRect.x + 26 - width / 2, // 根据label位置调整
+            y: boundingRect.y + 23, // 根据label位置调整
+            width, // label宽度加padding
+            height: 30, // label高度加padding
+          },
+          style: {
+            fill: 'rgba(255, 255, 255, 0.7)', // 方框颜色及透明度
+            stroke: '#000', // 方框边框颜色
+            lineWidth: 1,
+          },
+          type: 'rect',
+        };
+        // 将方框添加到graphic组件中
+        graphic.push(labelRect);
+      }
+    });
+    return graphic;
   }
 
   let resizeFn = resize;
   resizeFn = useDebounceFn(resize, 200);
   function resize() {
     chartInstance?.resize();
+    updateGraphics = true;
   }
   const { removeEvent } = useEventListener({
     el: window,
@@ -351,9 +294,18 @@
     listener: resizeFn,
   });
   let removeResizeFn = removeEvent;
-
+  let updateGraphics = false;
   onMounted(() => {
     chartInstance = echarts.init(document.querySelector('#chartRef'));
+
+    // 绘制方块
+    chartInstance.on('finished', function () {
+      // if (updateGraphics) {
+      //   chartInstance.setOption({ graphic: getBoxGraphics() });
+      //   updateGraphics = false;
+      // }
+    });
+
     updateChartData();
   });
 
@@ -414,7 +366,7 @@
         }
         return false;
       }
-      findByKey(defaultData.value);
+      findByKey(indicators);
       if (mode === 'edit') {
         foundNode.label = label;
       } else if (mode === 'create') {
@@ -453,7 +405,7 @@
       }
       return false;
     }
-    findNull(defaultData.value);
+    findNull(indicators);
     parentNode.splice(removeIndex, 1);
   }
   //#endregion
@@ -473,7 +425,7 @@
   :deep(.tree-container) {
     min-width: 300px;
     max-width: 500px;
-    width: 30%;
+    width: 20%;
     height: 100%;
     margin-right: 20px;
     .n-card__content {
