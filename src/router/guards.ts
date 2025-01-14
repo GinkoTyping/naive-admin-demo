@@ -80,7 +80,7 @@ export function createRouterGuards(router: Router) {
   });
 
   router.afterEach((to, _, failure) => {
-    document.title = (to?.meta?.title as string) || document.title;
+    document.title = (typeof to?.meta?.title === 'function' ? to.meta.title() : to.meta.title) || document.title;
     if (isNavigationFailure(failure)) {
       //console.log('failed navigation', failure)
     }

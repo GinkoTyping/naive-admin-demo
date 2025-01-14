@@ -11,7 +11,7 @@ const routes: Array<RouteRecordRaw> = [
     component: Layout,
     meta: {
       icon: renderIcon(NewspaperOutline),
-      sort: 3,
+      sort: 4,
       title: () => {
         return sessionStorage.getItem('isAdmin') === 'true' ? '打分表管理' : '专家评分';
       },

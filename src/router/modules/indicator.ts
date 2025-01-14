@@ -12,7 +12,8 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       title: '指标管理',
       icon: renderIcon(ProfileOutlined),
-      sort: 2,
+      sort: 3,
+      hidden: () => sessionStorage.getItem('isAdmin') !== 'true'
     },
     children: [
       {
