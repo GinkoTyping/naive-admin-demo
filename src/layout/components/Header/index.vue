@@ -57,7 +57,11 @@
                   v-if="crumbsSetting.showIcon && routeItem.meta.icon"
                   :is="routeItem.meta.icon"
                 />
-                {{ routeItem.meta.title }}
+                {{
+                  typeof routeItem.meta.title === 'function'
+                    ? routeItem.meta.title()
+                    : routeItem.meta.title
+                }}
               </span>
             </n-dropdown>
             <span class="link-text" v-else>
@@ -65,7 +69,11 @@
                 v-if="crumbsSetting.showIcon && routeItem.meta.icon"
                 :is="routeItem.meta.icon"
               />
-              {{ routeItem.meta.title }}
+              {{
+                typeof routeItem.meta.title === 'function'
+                  ? routeItem.meta.title()
+                  : routeItem.meta.title
+              }}
             </span>
           </n-breadcrumb-item>
         </template>
@@ -201,7 +209,7 @@
         return routerMap.map((item) => {
           const currentMenu = {
             ...item,
-            label: item.meta.title,
+            label: typeof item.meta.title === 'function' ? item.meta.title() : item.meta.title,
             key: item.name,
             disabled: item.path === '/',
           };

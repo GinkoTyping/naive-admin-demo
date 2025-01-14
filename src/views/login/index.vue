@@ -133,6 +133,8 @@
           password,
         };
 
+        sessionStorage.setItem('isAdmin', JSON.stringify(username === 'admin'));
+
         try {
           const { code, message: msg } = await userStore.login(params);
           message.destroyAll();

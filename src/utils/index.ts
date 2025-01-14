@@ -61,7 +61,7 @@ export function generatorMenu(routerMap: Array<any>) {
     const currentMenu = {
       ...info,
       ...info.meta,
-      label: info.meta?.title,
+      label: typeof info.meta?.title === 'string' ? info.meta?.title : info.meta?.title(),
       key: info.name,
       icon: isRoot ? item.meta?.icon : info.meta?.icon,
     };
@@ -137,8 +137,9 @@ export function isRootRouter(item) {
  * */
 export function filterRouter(routerMap: Array<any>) {
   return routerMap.filter((item) => {
+    const isHidden = typeof(item.meta?.hidden) === 'function' ? item.meta?.hidden() : item.meta?.hidden;
     return (
-      (item.meta?.hidden || false) != true &&
+      (isHidden || false) != true &&
       !['/:path(.*)*', '/', PageEnum.REDIRECT, PageEnum.BASE_LOGIN].includes(item.path)
     );
   });

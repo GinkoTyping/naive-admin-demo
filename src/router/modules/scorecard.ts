@@ -10,16 +10,20 @@ const routes: Array<RouteRecordRaw> = [
     redirect: '/scorecard/preview-card',
     component: Layout,
     meta: {
-      title: '打分表管理',
       icon: renderIcon(NewspaperOutline),
       sort: 3,
+      title: () => {
+        return sessionStorage.getItem('isAdmin') === 'true' ? '打分表管理' : '专家评分';
+      },
     },
     children: [
       {
         path: 'preview-card',
         name: 'preview-card',
         meta: {
-          title: '打分表管理',
+          title: () => {
+            return sessionStorage.getItem('isAdmin') === 'true' ? '打分表管理' : '专家评分';
+          },
         },
         component: () => import('@/views/scorecard/index.vue'),
       },
