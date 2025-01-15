@@ -8,79 +8,95 @@
         <n-step title="模糊综合评价计算" />
         <n-step title="评价结果" />
       </n-steps>
-      <n-h4 prefix="bar" class="mt-10">
-        <n-text type="primary"> 风险计算权重系数结果 </n-text>
-      </n-h4>
-      <n-collapse>
-        <n-collapse-item
-          :title="item.name"
-          :name="index"
-          v-for="(item, index) in resultData"
-          :key="index"
-        >
-          <n-table>
-            <thead>
-              <tr>
-                <th v-for="column in resultColumns" :key="column" style="width: 16.6%">{{
-                  column
-                }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(itemData, index) in item.data" :key="index">
-                <td v-for="item in itemData" :key="item">{{ item }}</td>
-              </tr>
-            </tbody>
-          </n-table>
-        </n-collapse-item>
-      </n-collapse>
-      <n-h4 prefix="bar" class="mt-10">
-        <n-text type="primary"> 模糊综合评价 </n-text>
-      </n-h4>
-      <n-collapse>
-        <n-collapse-item
-          :title="item.name"
-          :name="index"
-          v-for="(item, index) in tablesData"
-          :key="index"
-        >
-          <n-table>
-            <thead>
-              <tr>
-                <th v-for="column in columns" :key="column" style="width: 16.6%">{{ column }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(itemData, index) in item.data" :key="index">
-                <td v-for="item in itemData" :key="item">{{ item }}</td>
-              </tr>
-            </tbody>
-          </n-table>
-          <n-select
-            class="mt-4"
-            placeholder="请选择得分"
-            v-model:value="item.value"
-            :options="options"
-            style="width: 300px"
-          />
-        </n-collapse-item>
-      </n-collapse>
-      <n-h4 prefix="bar" class="mt-10">
-        <n-text type="primary"> 结果 </n-text>
-      </n-h4>
-      <n-p>
-        <p>经过模糊综合评价 该管道</p>
-        <br />
-        <p>人员因素风险度为管理因素风险度为 IV</p>
-        <p>管道因素风险度为 IV</p>
-        <p>缺陷因素凤险度为 IV</p>
-        <p>环境因素风险度为 IV</p>
-        <br />
-        <p>综上各因素 该管道总体风险度为 IV级风险 (I II III IV V)</p>
-      </n-p>
-
+      <div class="step-container" v-show="current === 3">
+        <n-h4 prefix="bar" class="mt-10">
+          <n-text type="primary"> 风险计算权重系数结果 </n-text>
+        </n-h4>
+        <n-collapse>
+          <n-collapse-item
+            :title="item.name"
+            :name="index"
+            v-for="(item, index) in resultData"
+            :key="index"
+          >
+            <n-table>
+              <thead>
+                <tr>
+                  <th v-for="column in resultColumns" :key="column" style="width: 16.6%">{{
+                    column
+                  }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(itemData, index) in item.data" :key="index">
+                  <td v-for="item in itemData" :key="item">{{ item }}</td>
+                </tr>
+              </tbody>
+            </n-table>
+          </n-collapse-item>
+        </n-collapse>
+      </div>
+      <div class="step-container" v-show="current === 4">
+        <n-h4 prefix="bar" class="mt-10">
+          <n-text type="primary"> 模糊综合评价 </n-text>
+        </n-h4>
+        <n-collapse>
+          <n-collapse-item
+            :title="item.name"
+            :name="index"
+            v-for="(item, index) in tablesData"
+            :key="index"
+          >
+            <n-table>
+              <thead>
+                <tr>
+                  <th v-for="column in columns" :key="column" style="width: 13.5%">{{ column }}</th>
+                  <th>评分</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(itemData, index) in item.data" :key="index">
+                  <td v-for="item in itemData" :key="item">{{ item }}</td>
+                  <td>
+                    <n-input-number
+                      :min="0"
+                      :max="5"
+                      v-model:value="item.values[index]"
+                    ></n-input-number>
+                  </td>
+                </tr>
+              </tbody>
+            </n-table>
+          </n-collapse-item>
+        </n-collapse>
+      </div>
+      <div class="step-container" v-show="current === 5">
+        <n-h4 prefix="bar" class="mt-10">
+          <n-text type="primary"> 结果 </n-text>
+        </n-h4>
+        <n-p>
+          <p>经过模糊综合评价 该管道</p>
+          <br />
+          <p>人员因素风险度为管理因素风险度为 IV</p>
+          <p>管道因素风险度为 IV</p>
+          <p>缺陷因素凤险度为 IV</p>
+          <p>环境因素风险度为 IV</p>
+          <br />
+          <p>综上各因素 该管道总体风险度为 IV级风险 (I II III IV V)</p>
+        </n-p>
+      </div>
       <div class="flex mt-4">
-        <n-button type="primary"> 导出报告 </n-button>
+        <n-button
+          secondary
+          type="primary"
+          class="mr-2"
+          v-show="current && current > 3"
+          @click="currentRef && currentRef--"
+        >
+          上一步
+        </n-button>
+        <n-button type="primary" v-show="current !== 5" @click="goNext"> 下一步 </n-button>
+        <n-button type="primary" v-show="current === 5"> 导出报告 </n-button>
       </div>
     </n-card>
   </div>
@@ -95,28 +111,6 @@
   const currentStatus = ref<StepsProps['status']>('process');
   const resultColumns = ['影响因素', '权重  wsu'];
   const columns = ['等级', '1', '2', '3', '4', '5'];
-  const options = ref([
-    {
-      label: 1,
-      value: 1,
-    },
-    {
-      label: 2,
-      value: 2,
-    },
-    {
-      label: 3,
-      value: 3,
-    },
-    {
-      label: 4,
-      value: 4,
-    },
-    {
-      label: 5,
-      value: 5,
-    },
-  ]);
   const resultData = ref([
     {
       name: '人员因素',
@@ -207,6 +201,7 @@
         ['工作年限', '≥10', '[5,10)', '[3,5)', '[1,3)', '<1'],
         ['责任意识', '非常好', '尚可', '普通', '缺乏', '无'],
       ],
+      values: [3, 3, 3, 3, 3],
     },
     {
       name: '管理因素的分类标准',
@@ -233,6 +228,7 @@
         ['应急预案', '详细', '相对详细', '不够详细', '不详细', '没有'],
         ['管道数据完整度', '完备', '基本完备', '缺失部分信息', '缺失大部分信息', '没有'],
       ],
+      values: [3, 3, 3, 3, 3, 3],
     },
     {
       name: '管道因素的分类标准',
@@ -264,6 +260,7 @@
         ['防腐措施', '完全合格', '基本合格', '存在一些不合格', '大部分不合格', '无防腐措施'],
         ['防变形措施', '完全合格', '基本合格', '存在一些不合格', '大部分不合格', '无防变形措施'],
       ],
+      values: [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
     },
     {
       name: '缺陷因素的分类标准',
@@ -334,6 +331,7 @@
           '过水面积损失在50%以上',
         ],
       ],
+      values: [3, 3, 3, 3, 3, 3, 3, 3],
     },
     {
       name: '环境因素的分类标准',
@@ -355,8 +353,15 @@
         ],
         ['强降雨概率', '<10%', '[10%,20%)', '[20%,50%)', '[50%,80%)', '>80%'],
       ],
+      values: [3, 3, 3, 3, 3, 3, 3, 3],
     },
   ]);
+
+  function goNext() {
+    if (currentRef.value) {
+      currentRef.value++;
+    }
+  }
 </script>
 <style lang="less" scoped>
   :deep(.n-steps) {

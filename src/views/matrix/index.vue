@@ -4,12 +4,13 @@
       <div class="select-container">
         <n-select v-model:value="selectedMatrix" :options="options" />
         <div class="btns">
-          <n-button quaternary circle color="green">
+          <n-button quaternary circle color="green" @click="isEdit = !isEdit">
             <template #icon>
-              <n-icon><CreateOutline /></n-icon>
+              <n-icon v-show="!isEdit"><CreateOutline /></n-icon>
+              <n-icon v-show="isEdit"><CheckmarkCircle /></n-icon>
             </template>
           </n-button>
-          <n-button quaternary circle color="blue">
+          <n-button quaternary circle color="blue" @click="showDialog = !showDialog">
             <template #icon>
               <n-icon><AddOutline /></n-icon>
             </template>
@@ -34,8 +35,11 @@
             <tr> </tr>
           </thead>
           <tbody>
-            <tr v-for="(data, index) in matrixData[0].data" :key="index">
-              <td v-for="(item, index) in data">{{ item }}</td>
+            <tr v-for="(data, index) in selectedData" :key="index">
+              <td v-for="(item, index) in data">
+                <n-input v-model:value="item.value" v-show="isEdit" clearable />
+                <span v-show="!isEdit">{{ item.value }}</span>
+              </td>
             </tr>
           </tbody>
           <div class="prefix"></div>
@@ -44,31 +48,106 @@
       </div>
     </n-card>
   </div>
+  <n-modal
+    v-model:show="showDialog"
+    title="新增矩阵"
+    preset="dialog"
+    negative-text="取消"
+    positive-text="确认"
+    :show-icon="false"
+    @positive-click="handleSubmit"
+    @negative-click="handleClose"
+  >
+    <!-- 表单内容 -->
+    <n-form ref="formRef" :model="formData" :rules="rules">
+      <n-form-item label="名称" path="label">
+        <n-input v-model:value="formData.label" />
+      </n-form-item>
+    </n-form>
+  </n-modal>
 </template>
 
 <script setup>
   import { ref, computed, onMounted } from 'vue';
-  import { CreateOutline, AddOutline, TrashOutline } from '@vicons/ionicons5'
+  import { CreateOutline, AddOutline, TrashOutline, CheckmarkCircle } from '@vicons/ionicons5';
 
+  const isEdit = ref(false);
+  const showDialog = ref(false);
+  function handleSubmit() {
+    if (formData.value.label) {
+      matrixData.value.push({
+        name: formData.value.label,
+        key: Date.now(),
+        data: [
+          [{ value: '' }, { value: '' }, { value: '' }, { value: '' }, { value: '' }],
+          [{ value: '' }, { value: '' }, { value: '' }, { value: '' }, { value: '' }],
+          [{ value: '' }, { value: '' }, { value: '' }, { value: '' }, { value: '' }],
+          [{ value: '' }, { value: '' }, { value: '' }, { value: '' }, { value: '' }],
+          [{ value: '' }, { value: '' }, { value: '' }, { value: '' }, { value: '' }],
+        ],
+      });
+      showDialog.value = false;
+    }
+  }
+  function handleClose() {}
+  const formData = ref({
+    label: '',
+    key: '',
+  });
+  const defaultMatrixData = [
+    [
+      { value: '0.4310' },
+      { value: '0.3103' },
+      { value: '0.1897' },
+      { value: '0.0690' },
+      { value: '0.0000' },
+    ],
+    [
+      { value: '0.2368' },
+      { value: '0.3289' },
+      { value: '0.2368' },
+      { value: '0.1477' },
+      { value: '0.0526' },
+    ],
+    [
+      { value: '0.1325' },
+      { value: '0.2169' },
+      { value: '0.3012' },
+      { value: '0.2169' },
+      { value: '0.1325' },
+    ],
+    [
+      { value: '0.0526' },
+      { value: '0.1477' },
+      { value: '0.1897' },
+      { value: '0.3289' },
+      { value: '0.2368' },
+    ],
+    [
+      { value: '0.0000' },
+      { value: '0.0690' },
+      { value: '0.1897' },
+      { value: '0.3103' },
+      { value: '0.4310' },
+    ],
+  ];
   const matrixData = ref([
     {
       name: '等差为0.28的三角形分布矩阵',
-      data: [
-        ['0.4310', '0.3103', '0.1897', '0.0690', '0.0000'],
-        ['0.2368', '0.3289', '0.2368', '0.1477', '0.0526'],
-        ['0.1325', '0.2169', '0.3012', '0.2169', '0.1325'],
-        ['0.0526', '0.1477', '0.1897', '0.3289', '0.2368'],
-        ['0.0000', '0.0690', '0.1897', '0.3103', '0.4310'],
-      ],
+      key: '0',
+      data: defaultMatrixData,
     },
   ]);
-  const selectedMatrix = ref('');
+  const selectedMatrix = ref('0');
+  const selectedData = computed(() => {
+    return matrixData.value.find((item) => item.key === selectedMatrix.value)?.data;
+  });
   const options = computed(() => {
-    return matrixData.value.map((item) => ({ label: item.name, key: item.name }));
+    return matrixData.value.map((item) => ({ label: item.name, value: item.key }));
   });
 
   onMounted(() => {
-    selectedMatrix.value = options.value[0]?.key;
+    selectedMatrix.value = matrixData.value[0]?.key;
   });
 </script>
 
@@ -82,7 +161,7 @@
     height: 100%;
   }
   .select-container {
-    max-width: 530px;
+    max-width: 630px;
     display: flex;
     justify-content: space-between;
     .n-select {
@@ -91,7 +170,7 @@
     }
   }
   .matrix-table-container {
-    max-width: 530px;
+    max-width: 630px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -108,7 +187,7 @@
     }
   }
   :deep(.n-table) {
-    max-width: 500px;
+    max-width: 600px;
     border: none !important;
     position: relative;
     td {
