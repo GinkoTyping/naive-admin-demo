@@ -171,7 +171,7 @@
       const drawerSetting = ref();
 
       const state = reactive({
-        username: userStore?.info?.username ?? '',
+        username: sessionStorage.getItem('isAdmin') === 'true' ? '管理员' : '专家',
         fullscreenIcon: 'FullscreenOutlined',
         navMode,
         navTheme,

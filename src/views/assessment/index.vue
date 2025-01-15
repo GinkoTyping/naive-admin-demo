@@ -359,6 +359,14 @@
   ]);
 </script>
 <style lang="less" scoped>
+  :deep(.n-steps) {
+    .n-step--finish-status .n-step-indicator {
+      background-color: #2d8cf0;
+      .n-base-icon {
+        color: #fff;
+      }
+    }
+  }
   .assessment-container {
     display: flex;
     flex-direction: column;

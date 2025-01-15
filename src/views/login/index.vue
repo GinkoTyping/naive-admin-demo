@@ -4,7 +4,8 @@
     <div class="view-account-container">
       <div class="view-account-top">
         <div class="view-account-top-logo">
-          <img :src="websiteConfig.loginImage" alt="" />
+          <h2 style="font-size: 24px; font-weight: bold; margin-bottom: 20px">风险评估系统</h2>
+          <!-- <img :src="websiteConfig.loginImage" alt="" /> -->
         </div>
         <div class="view-account-top-desc">{{ websiteConfig.loginDesc }}</div>
       </div>
