@@ -21,7 +21,7 @@ const routes: Array<RouteRecordRaw> = [
         meta: {
           title: '工程项目信息',
         },
-        component: () => import('@/views/home/index.vue'),
+        component: () => import('@/views/project/index.vue'),
       },
     ],
   },

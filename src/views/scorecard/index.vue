@@ -99,8 +99,8 @@
   const pageSettings = computed(() => {
     const isAdmin = sessionStorage.getItem('isAdmin') === 'true';
     return isAdmin
-      ? { showInfo: !isAdmin, titleName: '打分表管理' }
-      : { showInfo: isAdmin, titleName: '专家评分' };
+      ? { showInfo: isAdmin, titleName: '打分表管理' }
+      : { showInfo: !isAdmin, titleName: '专家评分' };
   });
 
   const sortLevelTableByParent = computed(() => {
