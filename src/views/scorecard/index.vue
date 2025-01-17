@@ -153,11 +153,10 @@
 
   const tables = ref([]);
   function createTableByLevel(dataList) {
-    console.log({ dataList });
     return dataList.reduce((pre, cur, index) => {
       const output = {
         tableName: '',
-        tableKey: `附表${cur.key}`,
+        tableKey: cur.key,
         parentLabel: cur.parentLabel,
         highlightIndex: 0,
         data: [],
@@ -180,11 +179,9 @@
   function initData() {
     sortTableByLevel(indicators);
     markTableIndex();
-    console.log(level0Data.value, level1Data.value, level2Data.value);
     level0Tables.value = createTableByLevel(level0Data.value);
     level1Tables.value = createTableByLevel(level1Data.value);
     level2Tables.value = createTableByLevel(level2Data.value);
-    console.log(tables.value);
   }
 
   onMounted(() => {
@@ -192,15 +189,17 @@
   });
 
   function getTableData(node) {
-    function getItemData() {
+    function getItemData(rowIndex) {
       return node.siblings.reduce((pre, cur) => {
-        pre[cur] = null;
+        pre[cur] = scoreData[`${node.key}-${rowIndex}-${cur}`]
+          ? Number(scoreData[`${node.key}-${rowIndex}-${cur}`])
+          : null;
         return pre;
       }, {});
     }
 
-    return node.siblings.map((item) => {
-      const baseData = getItemData();
+    return node.siblings.map((item, index) => {
+      const baseData = getItemData(index);
       baseData[item] = 1;
       baseData.root = item;
       return baseData;
@@ -217,9 +216,12 @@
           ? h('p', { style: { textAlign: 'center' } }, '1')
           : h(NInput, {
               type: 'number',
-              value: row.value,
+              min: 0,
+              max: 2,
+              value: scoreData[`${node.key}-${index}-${item}`],
               onUpdateValue(v) {
-                tableData[index].value = v;
+                tableData[index][item] = v;
+                updateScoreFromSession(node.key, index, item, v);
               },
             });
       },
@@ -235,6 +237,23 @@
       },
     });
     return output;
+  }
+
+  let scoreData = getScoreFromSession();
+  function getScoreFromSession() {
+    if (sessionStorage.getItem('score')) {
+      return JSON.parse(sessionStorage.getItem('score'));
+    } else {
+      sessionStorage.setItem('score', JSON.stringify({}));
+      return {};
+    }
+  }
+
+  function updateScoreFromSession(tableKey, rowIndex, columnKey, value) {
+    if (scoreData) {
+      scoreData[`${tableKey}-${rowIndex}-${columnKey}`] = value;
+      sessionStorage.setItem('score', JSON.stringify(scoreData));
+    }
   }
 </script>
 

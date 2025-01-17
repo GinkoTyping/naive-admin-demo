@@ -338,8 +338,10 @@
       } else {
         console.log('表单数据:', formData.value);
         modifyLableByKey(formData.value.label, formData.value.key, formMode.value);
-        showDialog.value = false;
 
+        sessionStorage.removeItem('score');
+
+        showDialog.value = false;
         message.success('操作成功。');
       }
     });
