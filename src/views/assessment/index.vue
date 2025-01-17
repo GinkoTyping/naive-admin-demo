@@ -74,15 +74,16 @@
         <n-h4 prefix="bar" class="mt-10">
           <n-text type="primary"> 结果 </n-text>
         </n-h4>
-        <n-p>
+        <n-p class="result" style="font-size: 28px;">
           <p>经过模糊综合评价 该管道</p>
           <br />
-          <p>人员因素风险度为管理因素风险度为 IV</p>
-          <p>管道因素风险度为 IV</p>
-          <p>缺陷因素凤险度为 IV</p>
-          <p>环境因素风险度为 IV</p>
+          <p>人员因素风险度为: <span>III级风险</span></p>
+          <p>管理因素风险度为: <span>III级风险</span></p>
+          <p>管道因素风险度为: <span>III级风险</span></p>
+          <p>缺陷因素凤险度为: <span>IV级风险</span></p>
+          <p>环境因素风险度为: <span>III级风险</span></p>
           <br />
-          <p>综上各因素 该管道总体风险度为 IV级风险 (I II III IV V)</p>
+          <p>综上各因素 该管道总体风险度为: <span>III级风险</span></p>
         </n-p>
       </div>
       <div class="flex mt-4">
@@ -381,5 +382,10 @@
   }
   tr {
     text-align: center;
+  }
+  .result span {
+    color: #2d8cf0;
+    text-decoration: underline;
+    font-weight: bold;
   }
 </style>
